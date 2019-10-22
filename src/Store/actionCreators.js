@@ -2,12 +2,22 @@ import * as actionTypes from './actionTypes.js';
 import axios from 'axios';
 
 
+// wait actionCreators
+
 export const waitStart = () => {
     return {
         type: actionTypes.WAIT_START
     }
 };
 
+export const waitStop = () => {
+    return {
+        type: actionTypes.WAIT_STOP
+    }
+};
+
+
+//Auth actionCreators
 export const authSuccess = (userId, token) => {
     return {
         type: actionTypes.AUTH_SUCCESS, userId: userId, token: token
@@ -35,7 +45,15 @@ export const auth = (userName, pass) => {
 
                 dispatch(authSuccess(response.idToken, response.localId))
             }
-        ).catch(err => dispatch(authFail(err.message)));
+        ).catch(err => {
+            let msg;
+            if (err.response) {
+                msg = err.response.data.error.message
+            } else {
+                msg = err.message;
+            }
+            dispatch(authFail(msg))
+        });
 
     }
 };
@@ -57,19 +75,14 @@ export const checkIsAuth = () => {
         }
     } else {
         return dispatch => {
-            dispatch(authFail("Not LoggedIn"))
+            dispatch(authFail())
         }
     }
 
 };
 
 
-export const waitStop = () => {
-    return {
-        type: actionTypes.WAIT_STOP
-    }
-};
-
+// Get Posts actionCreators
 export const getPosts = (id) => {
     return dispatch => {
         dispatch(waitStart());
@@ -79,7 +92,16 @@ export const getPosts = (id) => {
             dispatch(waitStop());
             const post = [...res.data]
             dispatch(getPostsSuccess(post))
-        }).catch(err => dispatch(getPostsFail(err.message)))
+        }).catch(err => {
+            let msg;
+            if (err.response) {
+                msg = err.response.data.error.message
+            } else {
+                msg = err.message;
+            }
+
+            dispatch(getPostsFail(msg))
+        })
     }
 
 };
@@ -90,6 +112,14 @@ export const getPostsSuccess = (posts) => {
     }
 };
 
+export const getPostsFail = (err) => {
+    return {
+        type: actionTypes.GET_POSTS_FAIL, err: err
+    }
+};
+
+
+// Get One Post ActionCreators
 export const getOnePost = (id) => {
 
     return dispatch => {
@@ -98,8 +128,15 @@ export const getOnePost = (id) => {
                 const post = res.data;
                 dispatch(getOnePostSuccess(post));
             }
-        ).catch(err =>
-            dispatch(getOnePostfail(err.message))
+        ).catch(err => {
+                let msg;
+                if (err.response) {
+                    msg = err.response.data.error.message
+                } else {
+                    msg = err.message;
+                }
+                dispatch(getOnePostfail(msg))
+            }
         )
     }
 };
@@ -110,11 +147,6 @@ export const getOnePostSuccess = post => {
     }
 };
 
-export const getPostsFail = (err) => {
-    return {
-        type: actionTypes.GET_POSTS_FAIL, err: err
-    }
-};
 
 export const getOnePostfail = err => {
     return {

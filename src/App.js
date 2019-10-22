@@ -1,8 +1,7 @@
 import React, {useEffect, lazy, Suspense} from 'react';
 import './App.css';
 import Login from "./Containers/Login/Login";
-import {Redirect, Route, Switch, withRouter} from "react-router-dom";
-// import Posts from "./Containers/Posts/Posts";
+import {Redirect, Route} from "react-router-dom";
 import * as actionCreators from "./Store/actionCreators";
 import {useDispatch,} from "react-redux";
 

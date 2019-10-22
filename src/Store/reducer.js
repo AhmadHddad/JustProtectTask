@@ -60,16 +60,14 @@ const reducer = (state = initialState, action) => {
         case actionTypes.GET_POSTS_FAIL:
             return {
                 ...state,
-                posts: action.err,
                 isLoading: false,
-                err:"Cant Get Posts"
+                err: action.err
 
             };
 
         case actionTypes.GET_ONE_POST_FAIL:
             return {
                 ...state,
-                userPosts: action.err,
                 isLoading: false,
                 err:action.err
             };

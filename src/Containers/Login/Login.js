@@ -51,6 +51,8 @@ const Login = (props) => {
     const isLoading = useSelector(state => state.isLoading);
     const err = useSelector(state => state.err);
     const isAuth = useSelector(state => state.isAuth);
+    let error;
+    let form;
 
     useEffect(() => {
         if (isAuth) {
@@ -58,10 +60,6 @@ const Login = (props) => {
         }
     }, [isAuth]);
 
-
-
-
-    let myClassed = ["box"];
 
     const inputChangedHandler = (event, id) => {
         const xState = {
@@ -81,12 +79,10 @@ const Login = (props) => {
 
     const authHandler = (event) => {
         event.preventDefault();
-        console.log('from auth', controlsState.password.value);
         dispatch(actionCreators.auth(controlsState.userName.value, controlsState.password.value));
     };
 
-    let error;
-
+    // error MSG
     if (err) {
         error = <p className="err">
             {err}
@@ -102,7 +98,6 @@ const Login = (props) => {
     }
 
 
-    let form;
     if (isLoading) {
         form = <Spinner/>;
     } else {
@@ -117,8 +112,6 @@ const Login = (props) => {
             />;
         });
     }
-
-
 
 
     return (

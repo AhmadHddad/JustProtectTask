@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import Post from "./Post/Post";
 import './Posts.css';
@@ -7,33 +7,45 @@ import Spinner from "../../Components/UI/Spinner/Spinner";
 
 const Posts = (props) => {
 
+
+    const dispatch = useDispatch();
     const isAuth = useSelector(state => state.isAuth);
     const err = useSelector(state => state.err);
     const userPosts = useSelector(state => state.userPosts);
-    const allPosts = useSelector(state => state.posts) ;
+    const allPosts = useSelector(state => state.posts);
     const [HideState, setHideState] = useState("hide");
+    let onePost = err || <Spinner/>;
+    let posts = err || <Spinner/>;
 
-    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!isAuth) {
             props.history.push('/')
         }
+        dispatch(actionCreators.getPosts())
+
     }, [isAuth]);
 
 
-    useEffect(() => {
+    const postClickHandler = (id) => {
+        setHideState("onePost");
+        dispatch(actionCreators.getOnePost(id));
+    };
 
-        dispatch(actionCreators.getPosts())
 
-    }, []);
+    if (err) {
+        posts = err;
+    }
 
-    let posts = <Spinner/>;
 
-    if (Array.isArray(allPosts)){
-    console.log('test', allPosts[0]);}
+    if (typeof (userPosts) == "object" && userPosts) {
+        onePost = <Post name={userPosts.title}
+                        email={userPosts.body}
+        />
+    }
 
-    if ( Array.isArray(allPosts) ){
+
+    if (Array.isArray(allPosts)) {
         posts = allPosts.map(p => {
             return <Post
                 key={p.id}
@@ -46,30 +58,13 @@ const Posts = (props) => {
 
     }
 
-    if (err){
-        posts = err
-    }
-
-    let  onePost = <Spinner/>;
-
-    const postClickHandler = (id)=>{
-       setHideState("onePost");
-       dispatch(actionCreators.getOnePost(id));
-    };
-
-
-    if (userPosts){
-        onePost = <Post name={userPosts.title}
-                email={userPosts.body}
-        />
-    }
 
     return (
         <React.Fragment>
             <div className="allPosts">
-            <ul>
-                {posts}
-            </ul>
+                <ul>
+                    {posts}
+                </ul>
             </div>
             <div className={HideState}>
                 <ul>
