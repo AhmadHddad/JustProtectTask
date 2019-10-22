@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, lazy, Suspense} from 'react';
 import './App.css';
+import Login from "./Containers/Login/Login";
+import {Redirect, Route, Switch, withRouter} from "react-router-dom";
+// import Posts from "./Containers/Posts/Posts";
+import * as actionCreators from "./Store/actionCreators";
+import {useDispatch,} from "react-redux";
+
+
+const Posts = lazy(() => import("./Containers/Posts/Posts"));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(actionCreators.checkIsAuth());
+
+    }, []);
+
+    return (
+        <div className="App">
+            <Suspense fallback='/'>
+                <Route path='/Posts' component={Posts}/>
+                <Route path='/' exact component={Login}/>
+                <Redirect to="/"/>
+            </Suspense>
+        </div>
+    );
 }
 
 export default App;
