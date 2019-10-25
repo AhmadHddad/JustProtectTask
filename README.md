@@ -1,4 +1,4 @@
-## This is a Task for JustProtect.
+## This is a Task for React.
 
 ### Its a smiple login page and posts page
 
